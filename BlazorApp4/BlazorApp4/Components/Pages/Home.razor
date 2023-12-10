@@ -1,0 +1,672 @@
+﻿@page "/"
+
+@using BlazorApp4.Components.ClassType
+@using System.Collections
+@using static BlazorApp4.GlobalClass
+
+<h1>Расписание</h1>
+
+<h2>Расписание студента</h2>
+@for (int i = 0; i < StudentSchedule.Id.Count; i++)
+{
+    var lessonId = StudentSchedule.SubjectID[i].Name;
+    var subject = StudentSchedule.SubjectID[i].Name;
+    var teacher =StudentSchedule.TeacherID[i].FirstName;
+    var classroom = StudentSchedule.ClassroomID[i].Name;
+
+    <div class="schedule-property">
+        <h3>Lesson : @lessonId</h3>
+        <p><strong>Subject:</strong> @subject</p>
+        <p><strong>Teacher:</strong> @teacher</p>
+        <p><strong>Classroom:</strong> @classroom</p>
+    </div>
+}
+
+
+@code {
+    Studyschedule StudentSchedule = new Studyschedule();
+    Studyschedule TeacherSchedule = new Studyschedule();
+    GlobalClass GlobalClass = new GlobalClass();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Инициализация модели для расписания студента и преподавателя
+        StudentSchedule = await GetStudentSchedule();
+        TeacherSchedule = await GetTeacherSchedule();
+    }
+
+    // Метод для получения расписания студента из сервиса
+    private async Task<Studyschedule> GetStudentSchedule()
+    {
+        GlobalClass.Add();
+        // Здесь должен быть вызов вашего сервиса для получения расписания студента из базы данных
+        return GlobalClass.Select();
+    }
+
+    // Метод для получения расписания преподавателя из сервиса
+    private async Task<Studyschedule> GetTeacherSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания преподавателя из базы данных
+        return GlobalClass.Select();
+    }
+
+    // Методы для получения имени предмета, учителя и кабинета по их ID
+    private string GetSubjectName(int subjectId)
+    {
+        // Здесь должна быть логика получения имени предмета по его ID
+        return "Subject" + subjectId;
+    }
+
+    private string GetTeacherName(int teacherId)
+    {
+        // Здесь должна быть логика получения имени учителя по его ID
+        return "Teacher" + teacherId;
+    }
+
+    private string GetClassroomName(int classroomId)
+    {
+        // Здесь должна быть логика получения имени кабинета по его ID
+        return "Classroom" + classroomId;
+    }
+}
+
+<style>
+    .schedule-property {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+        .schedule-property h3 {
+            margin-bottom: 5px;
+        }
+
+        .schedule-property p {
+            margin-bottom: 5px;
+        }
+</style>
+
+
+
+
+
+@* @page "/"
+
+@using BlazorApp4.Components.ClassType
+@using static BlazorApp4.GlobalClass
+
+<h1>Расписание</h1>
+
+<h2>Расписание студента</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th></th>
+            @foreach (var dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                <th>@((DayOfWeek)dayOfWeek)</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var time in StudentSchedule.Time)
+        {
+            <tr>
+                <td>@time</td>
+                @foreach (var dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    var lessons = StudentSchedule.Date
+                    .Where(date => date.DayOfWeek == (DayOfWeek)dayOfWeek && date.ToShortTimeString() == time)
+                    .ToList();
+
+                    <td>
+                        @foreach (var lesson in lessons)
+                        {
+                            var index = StudentSchedule.Date.IndexOf(lesson);
+                            <div style="background-color: lightblue; padding: 5px;">
+                                <strong>@StudentSchedule.SubjectID[index].Name</strong><br />
+                                @StudentSchedule.TeacherID[index].FirstName<br />
+                                @StudentSchedule.ClassroomID[index].Name
+                            </div>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    Studyschedule StudentSchedule = new Studyschedule();
+    Studyschedule TeacherSchedule = new Studyschedule();
+    GlobalClass GlobalClass = new GlobalClass();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Инициализация модели для расписания студента и преподавателя
+        StudentSchedule = await GetStudentSchedule();
+        TeacherSchedule = await GetTeacherSchedule();
+    }
+
+    // Метод для получения расписания студента из сервиса
+    private async Task<Studyschedule> GetStudentSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания студента из базы данных
+        return GlobalClass.Select();
+    }
+
+    // Метод для получения расписания преподавателя из сервиса
+    private async Task<Studyschedule> GetTeacherSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания преподавателя из базы данных
+        return GlobalClass.Select();
+    }
+}
+ *@
+
+
+@* @page "/"
+
+@using BlazorApp4.Components.ClassType
+@using static BlazorApp4.GlobalClass
+
+<h1>Расписание</h1>
+
+<h2>Расписание студента</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th></th>
+            @foreach (var dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                <th>@((DayOfWeek)dayOfWeek)</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < StudentSchedule.Id.Count; i++)
+        {
+            <tr>
+                <td>@StudentSchedule.Time[i]</td>
+                @foreach (var dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    <td>
+                        @foreach (var lesson in StudentSchedule.Date.Where(date => date.DayOfWeek == (DayOfWeek)dayOfWeek && date.ToShortTimeString() == StudentSchedule.Time[i]))
+                        {
+                            <div style="background-color: lightblue; padding: 5px;">
+                                <strong>@StudentSchedule.SubjectID[i].Name</strong><br />
+                                @StudentSchedule.TeacherID[i].FirstName<br />
+                                @StudentSchedule.ClassroomID[i].Name
+                            </div>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    Studyschedule StudentSchedule = new Studyschedule();
+    Studyschedule TeacherSchedule = new Studyschedule();
+    GlobalClass GlobalClass = new GlobalClass();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Инициализация модели для расписания студента и преподавателя
+        StudentSchedule = await GetStudentSchedule();
+        TeacherSchedule = await GetTeacherSchedule();
+    }
+
+    // Метод для получения расписания студента из сервиса
+    private async Task<Studyschedule> GetStudentSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания студента из базы данных
+        return GlobalClass.Select();
+    }
+
+    // Метод для получения расписания преподавателя из сервиса
+    private async Task<Studyschedule> GetTeacherSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания преподавателя из базы данных
+        return GlobalClass.Select();
+    }
+}
+
+ *@
+
+
+
+
+@* @page "/"
+
+@using BlazorApp4.Components.ClassType
+@using static BlazorApp4.GlobalClass
+
+<h1>Расписание</h1>
+
+<h2>Расписание студента</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th></th>
+            @foreach (var dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                <th>@((DayOfWeek)dayOfWeek)</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < StudentSchedule.Time.Count; i++)
+        {
+            <tr>
+                <td>@StudentSchedule.Time[i]</td>
+                @foreach (var dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    <td>
+                        @foreach (var lesson in StudentSchedule.Date.Where(date => date.DayOfWeek == (DayOfWeek)dayOfWeek && date.ToShortTimeString() == StudentSchedule.Time[i]))
+                        {
+                            <div style="background-color: lightblue; padding: 5px;">
+                                <strong>@lesson.SubjectID.Name</strong><br />
+                                @lesson.TeacherID.FirstName<br />
+                                @lesson.ClassroomID.Name
+                            </div>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    Studyschedule StudentSchedule = new Studyschedule();
+    Studyschedule TeacherSchedule = new Studyschedule();
+    GlobalClass GlobalClass = new GlobalClass();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Инициализация модели для расписания студента и преподавателя
+        StudentSchedule = await GetStudentSchedule();
+        TeacherSchedule = await GetTeacherSchedule();
+    }
+
+    // Метод для получения расписания студента из сервиса
+    private async Task<Studyschedule> GetStudentSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания студента из базы данных
+        return GlobalClass.Select();
+    }
+
+    // Метод для получения расписания преподавателя из сервиса
+    private async Task<Studyschedule> GetTeacherSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания преподавателя из базы данных
+        return GlobalClass.Select();
+    }
+}
+ *@
+
+
+
+@* @page "/"
+
+@using BlazorApp4.Components.ClassType
+@using static BlazorApp4.GlobalClass
+
+<h1>Расписание</h1>
+
+<h2>Расписание студента</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th></th>
+            @foreach (var dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                <th>@((DayOfWeek)dayOfWeek)</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < StudentSchedule.Time.Count; i++)
+        {
+            <tr>
+                <td>@StudentSchedule.Time[i]</td>
+                @foreach (var dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    var dayLessons = StudentSchedule.Date.Where(date => date.DayOfWeek == (DayOfWeek)dayOfWeek && date.ToShortTimeString() == StudentSchedule.Time[i]).ToList();
+                    <td>
+                        @foreach (var lesson in dayLessons)
+                        {
+
+
+                            <div style="background-color: lightblue; padding: 5px;">
+                                <strong>@StudentSchedule.SubjectID[i].Name</strong><br />
+                                @StudentSchedule.TeacherID[i].FirstName<br />
+                                @StudentSchedule.ClassroomID[i].Name
+                            </div>
+                          
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    Studyschedule StudentSchedule = new Studyschedule();
+    Studyschedule TeacherSchedule = new Studyschedule();
+    GlobalClass GlobalClass = new GlobalClass();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Инициализация модели для расписания студента и преподавателя
+        StudentSchedule = await GetStudentSchedule();
+        TeacherSchedule = await GetTeacherSchedule();
+    }
+
+    // Метод для получения расписания студента из сервиса
+    private async Task<Studyschedule> GetStudentSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания студента из базы данных
+        return GlobalClass.Select();
+    }
+
+    // Метод для получения расписания преподавателя из сервиса
+    private async Task<Studyschedule> GetTeacherSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания преподавателя из базы данных
+        return GlobalClass.Select();
+    }
+} *@
+
+
+
+
+
+
+
+@* @page "/"
+
+@using BlazorApp4.Components.ClassType
+@using static BlazorApp4.GlobalClass
+
+<h1>Расписание</h1>
+
+<h2>Расписание студента</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Предмет</th>
+            <th>Преподаватель</th>
+            <th>Группа</th>
+            <th>День недели</th>
+            <th>Время</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < TeacherSchedule.Id.Count; i++)
+        {
+            <tr>                                                                                                
+                <td>@StudentSchedule.SubjectID[i].Name</td>
+                <td>@StudentSchedule.TeacherID[i].FirstName</td>
+                <td>@StudentSchedule.GroupId[i]._Group</td>
+                <td>@StudentSchedule.Date[i]</td>
+                <td>@StudentSchedule.Time[i]</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Расписание преподавателя</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Предмет</th>
+            <th>Группа</th>
+            <th>День недели</th>
+            <th>Время</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < TeacherSchedule.Id.Count; i++)
+        {
+            <tr>
+                <td>@StudentSchedule.SubjectID[i].Name</td>
+                <td>@StudentSchedule.GroupId[i]._Group</td>
+                <td>@TeacherSchedule.Date[i]</td>
+                <td>@TeacherSchedule.Time[i]</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    Studyschedule StudentSchedule = new Studyschedule();
+    Studyschedule TeacherSchedule = new Studyschedule();
+    GlobalClass GlobalClass = new GlobalClass();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Инициализация модели для расписания студента
+        StudentSchedule = await GetStudentSchedule();
+        // Инициализация модели для расписания преподавателя
+        TeacherSchedule = await GetTeacherSchedule();
+    }
+
+    // Метод для получения расписания студента из сервиса
+    private async Task<Studyschedule> GetStudentSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания студента из базы данных
+        // Пример:
+        // var scheduleService = new ScheduleService(/* вставьте ваш контекст базы данных */);
+        // return await scheduleService.GetStudentSchedule(studentId);
+        // return new Studyschedule(); // Возвращаем пустой объект, так как это пример
+        return GlobalClass.Select();
+    }
+
+    // Метод для получения расписания преподавателя из сервиса
+    private async Task<Studyschedule> GetTeacherSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания преподавателя из базы данных
+        // Пример:
+        // var scheduleService = new ScheduleService(/* вставьте ваш контекст базы данных */);
+        // return await scheduleService.GetTeacherSchedule(teacherId);
+        // return new Studyschedule(); // Возвращаем пустой объект, так как это пример
+        return GlobalClass.Select();
+    }
+}
+ *@
+
+
+
+@* 
+@using BlazorApp4.Components.ClassType
+@using static BlazorApp4.GlobalClass
+
+<h1>Расписание</h1>
+
+<h2>Расписание студента</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Предмет</th>
+            <th>Преподаватель</th>
+            <th>Группа</th>
+            <th>День недели</th>
+            <th>Время</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var schedule in StudentSchedule.)
+        {
+            <tr>
+                <td>@schedule</td>
+                <td>@StudentSchedule.TeacherID[StudentSchedule.SubjectID.IndexOf(schedule)]</td>
+                <td>@StudentSchedule.GroupId[StudentSchedule.SubjectID.IndexOf(schedule)]</td>
+                <td>@StudentSchedule.Date[StudentSchedule.SubjectID.IndexOf(schedule)]</td>
+                <td>@StudentSchedule.Time[StudentSchedule.SubjectID.IndexOf(schedule)]</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Расписание преподавателя</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Предмет</th>
+            <th>Группа</th>
+            <th>День недели</th>
+            <th>Время</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var schedule in TeacherSchedule.SubjectID)
+        {
+            <tr>
+                <td>@schedule</td>
+                <td>@TeacherSchedule.GroupId[TeacherSchedule.SubjectID.IndexOf(schedule)]</td>
+                <td>@TeacherSchedule.Date[TeacherSchedule.SubjectID.IndexOf(schedule)]</td>
+                <td>@TeacherSchedule.Time[TeacherSchedule.SubjectID.IndexOf(schedule)]</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    Studyschedule StudentSchedule = new Studyschedule();
+    Studyschedule TeacherSchedule = new Studyschedule();
+    GlobalClass GlobalClass = new GlobalClass();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Инициализация модели для расписания студента
+        StudentSchedule = await GetStudentSchedule();
+        // Инициализация модели для расписания преподавателя
+        TeacherSchedule = await GetTeacherSchedule();
+    }
+
+    // Метод для получения расписания студента из сервиса
+    private async Task<Studyschedule> GetStudentSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания студента из базы данных
+        // Пример:
+        // var scheduleService = new ScheduleService(/* вставьте ваш контекст базы данных */);
+        // return await scheduleService.GetStudentSchedule(studentId);
+        // return new Studyschedule(); // Возвращаем пустой объект, так как это пример
+        return GlobalClass.Select();
+
+    }
+
+    // Метод для получения расписания преподавателя из сервиса
+    private async Task<Studyschedule> GetTeacherSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания преподавателя из базы данных
+        // Пример:
+        // var scheduleService = new ScheduleService(/* вставьте ваш контекст базы данных */);
+        // return await scheduleService.GetTeacherSchedule(teacherId);
+        // return new Studyschedule(); // Возвращаем пустой объект, так как это пример
+        return GlobalClass.Select();
+
+    }
+}
+
+
+ *@
+
+
+
+@* 
+
+@page "/"
+
+@using BlazorApp4.Components.ClassType
+@using static BlazorApp4.GlobalClass
+
+<h1>Расписание</h1>
+
+<h2>Расписание студента</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Предмет</th>
+            <th>Преподаватель</th>
+            <th>Группа</th>
+            <th>День недели</th>
+            <th>Время</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@StudentSchedule.SubjectID</td>
+            <td>@StudentSchedule.TeacherID</td>
+            <td>@StudentSchedule.GroupId</td>
+            <td>@StudentSchedule.Date</td>
+            <td>@StudentSchedule.Time</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Расписание преподавателя</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Предмет</th>
+            <th>Группа</th>
+            <th>День недели</th>
+            <th>Время</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@TeacherSchedule.SubjectID</td>
+            <td>@TeacherSchedule.GroupId</td>
+            <td>@TeacherSchedule.Date</td>
+            <td>@TeacherSchedule.Time</td>
+        </tr>
+    </tbody>
+</table>
+
+@code {
+    Studyschedule StudentSchedule = new Studyschedule();
+    Studyschedule TeacherSchedule = new Studyschedule();
+        GlobalClass GlobalClass = new GlobalClass();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Инициализация модели для расписания студента
+        StudentSchedule = await GetStudentSchedule();
+        // Инициализация модели для расписания преподавателя
+        TeacherSchedule = await GetTeacherSchedule();
+    }
+
+    // Метод для получения расписания студента из сервиса
+    private async Task<Studyschedule> GetStudentSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания студента из базы данных
+        // Пример:
+        // var scheduleService = new ScheduleService(/* вставьте ваш контекст базы данных */);
+        // return await scheduleService.GetStudentSchedule(studentId);
+        // return new Studyschedule(); // Возвращаем пустой объект, так как это пример
+        return GlobalClass.Select();
+
+    }
+
+    // Метод для получения расписания преподавателя из сервиса
+    private async Task<Studyschedule> GetTeacherSchedule()
+    {
+        // Здесь должен быть вызов вашего сервиса для получения расписания преподавателя из базы данных
+        // Пример:
+        // var scheduleService = new ScheduleService(/* вставьте ваш контекст базы данных */);
+        // return await scheduleService.GetTeacherSchedule(teacherId);
+        // return new Studyschedule(); // Возвращаем пустой объект, так как это пример
+        return GlobalClass.Select();
+
+    }
+}
+
+
+
+ *@
